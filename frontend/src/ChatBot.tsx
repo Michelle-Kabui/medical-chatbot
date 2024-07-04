@@ -1,14 +1,49 @@
-import { Box, Typography, TextField, IconButton } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import { Box, TextField, CircularProgress, Typography } from '@mui/material';
 
 const ChatBot = () => {
+    const [messages, setMessages] = useState<{ content: string, sender: 'user' | 'bot' }[]>([]);
     const [message, setMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const endOfMessagesRef = useRef<null | HTMLDivElement>(null);
 
-    const handleSendMessage = () => {
-        // Handle send message functionality here
-        console.log(message);
-        setMessage('');
+    const scrollToBottom = () => {
+        endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
     };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    const handleSendMessage = async () => {
+        if (!message.trim()) return;
+        
+        const userMessage = { content: message, sender: 'user' as 'user' | 'bot' };
+        setMessages(messages => [...messages, userMessage]);
+        setMessage('');
+        setIsLoading(true); // Set loading state to true
+    
+        try {
+            const response = await axios.post('http://localhost:8000/chat/', { query: message });
+            const botMessage = { 
+                content: response.data.response.result, // Accessing the result from the response object
+                sender: 'bot' as 'user' | 'bot'
+            };
+            setMessages(messages => [...messages, botMessage]);
+        } catch (error) {
+            console.error('Error fetching response:', error);
+            const errorMessage = {
+                content: 'Failed to get response. Try again later.',
+                sender: 'bot' as 'user' | 'bot'
+            };
+            setMessages(messages => [...messages, errorMessage]);
+        }
+    
+        setIsLoading(false); // Set loading state to false after receiving response or error
+    };
+    
+    
 
     const handleNewChat = () => {
         // Handle new chat functionality here
@@ -90,9 +125,20 @@ const ChatBot = () => {
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                 }}>
-                    {/* This box will contain the chatbot */}
-                    <Box sx={{ flexGrow: 1 }}>
-                        {/* Chat messages will go here */}
+                    <Box sx={{ flexGrow: 1, overflowY: 'auto' }}>
+                        {messages.map((msg, index) => (
+                            <Box key={index} sx={{
+                                textAlign: msg.sender === 'user' ? 'right' : 'left',
+                                margin: '10px',
+                                padding: '10px',
+                                borderRadius: '10px',
+                                bgcolor: msg.sender === 'user' ? '#B6EFD4' : '#F0F0F0'
+                            }}>
+                                {msg.content}
+                            </Box>
+                        ))}
+                        {isLoading && <Box sx={{ textAlign: 'center' }}><CircularProgress /></Box>}
+                        <div ref={endOfMessagesRef} />
                     </Box>
                     <Box sx={{
                         display: 'flex',
@@ -123,11 +169,11 @@ const ChatBot = () => {
                                 ml: 2,
                                 cursor: 'pointer'
                             }}
-                            onClick={handleSendMessage} // Functionality for sending user queries
+                            onClick={handleSendMessage}
                         >
                             <img
                                 src={process.env.PUBLIC_URL + '/images/stethoscope.png'}
-                                alt={'landing'}
+                                alt={'Send'}
                                 style={{
                                     width: '100%',
                                     height: '100%'
