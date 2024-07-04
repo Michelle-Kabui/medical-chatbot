@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 function LandingPage() {
     const [loading, setLoading] = useState(false);
 
-    const handleGetStarted = () => {
-        setLoading(true);
-        setTimeout(() => {
-            window.location.href = 'http://localhost:8000';
-        }, 5000);
-    };
+    // const handleGetStarted = () => {
+    //     setLoading(true);
+    //     setTimeout(() => {
+    //         window.location.href = 'http://localhost:3000';
+    //     }, 5000);
+    // };
 
-    useEffect(() => {
-        if (loading) {
-            // Redirect after 5 seconds
-            const timer = setTimeout(() => {
-                setLoading(false);
-            }, 5000);
-            return () => clearTimeout(timer);
-        }
-    }, [loading]);
+    // useEffect(() => {
+    //     if (loading) {
+    //         // Redirect after 5 seconds
+    //         const timer = setTimeout(() => {
+    //             setLoading(false);
+    //         }, 5000);
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [loading]);
 
     return (
         <>
@@ -36,7 +37,7 @@ function LandingPage() {
                 }}>
                     <Typography sx={{
                         fontFamily: 'Jura, Arial, sans-serif',
-                        color: '#FFFFFF',
+                        color: '#000000',
                         fontSize: '70px',
                         fontWeight: 'normal',
                         lineHeight: '42px',
@@ -47,7 +48,7 @@ function LandingPage() {
                     </Typography>
                     <Typography sx={{
                         fontFamily: 'Jura, Arial, sans-serif',
-                        color: '#FFFFFF',
+                        color: '#000',
                         fontSize: '20px',
                         fontWeight: 'light',
                         mb: '10px',
@@ -60,32 +61,42 @@ function LandingPage() {
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}>
-                        <Button
-                            onClick={handleGetStarted}
-                            sx={{
-                                bgcolor: '#D9D9D9',
-                                borderRadius: '30px',
-                                width: '200px',
-                                height: '40px',
-                                '&:hover': {
-                                    bgcolor: '#FFFFFF',
-                                }
-                            }}
-                            disabled={loading}
-                        >
-                            {loading ? (
-                                <CircularProgress size={24} sx={{ color: '#000000' }} />
-                            ) : (
-                                <Typography sx={{
-                                    textTransform: 'uppercase',
-                                    fontWeight: 'light',
-                                    fontSize: '16px',
-                                    color: '#000000',
-                                }}>
-                                    Get Started
-                                </Typography>
-                            )}
-                        </Button>
+                        <Link to="/chatbot" style={{
+                            textDecoration: 'none',
+                        }}>
+                            <Button
+                                variant='contained'
+                                sx={{
+                                    bgcolor: '#000',
+                                    borderRadius: '30px',
+                                    width: '200px',
+                                    height: '40px',
+                                    '&:hover': {
+                                        bgcolor: '#fff',
+                                        outline: 'solid 1px #000',
+                                        '.MuiTypography-root': {
+                                            color: '#000',
+                                        },
+                                        boxShadow: 'none',
+                                    },
+                                    boxShadow: 'none',
+                                }}
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <CircularProgress size={24} sx={{ color: '#ffffff' }} />
+                                ) : (
+                                    <Typography sx={{
+                                        textTransform: 'uppercase',
+                                        fontWeight: 'light',
+                                        fontSize: '16px',
+                                        color: '#fff',
+                                    }}>
+                                        Get Started
+                                    </Typography>
+                                )}
+                            </Button>
+                        </Link>
                     </Box>
                 </Box>
                 <Box sx={{
