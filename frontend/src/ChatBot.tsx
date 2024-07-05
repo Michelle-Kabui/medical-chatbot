@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Box, TextField, CircularProgress, Typography } from '@mui/material';
+import { Box, TextField, CircularProgress, Typography, InputAdornment, IconButton } from '@mui/material';
 
 const ChatBot = () => {
     const [messages, setMessages] = useState<{ content: string, sender: 'user' | 'bot' }[]>([]);
@@ -147,27 +147,33 @@ const ChatBot = () => {
                                         borderRadius: '30px',
                                     },
                                 },
+                                outline: 'solid 1px #000',
+                            }}
+                            InputProps={{
+                                style: { paddingRight: '20px' },
+                                endAdornment: (
+                                    <InputAdornment
+                                        position="end"
+                                        style={{
+                                            marginRight:'10px'
+                                        }}>
+                                        <IconButton
+                                            onClick={handleSendMessage}
+                                            edge="end"
+                                        >
+                                            <img
+                                                src={process.env.PUBLIC_URL + '/images/stethoscope.png'}
+                                                alt="Send"
+                                                style={{
+                                                    width: '40px',
+                                                    height: '40px'
+                                                }} // Adjust size as needed
+                                            />
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
                             }}
                         />
-                        <Box
-                            sx={{
-                                width: '40px',
-                                height: '40px',
-                                boxShadow: 'none',
-                                ml: 2,
-                                cursor: 'pointer',
-                                marginRight: '0px',
-                            }}
-                            onClick={handleSendMessage}
-                        >
-                            <img
-                                src={process.env.PUBLIC_URL + '/images/stethoscope.png'}
-                                alt='Send'
-                                style={{
-                                    width: '100%', height: '100%'
-                                }}
-                            />
-                        </Box>
                     </Box>
                 </Box>
                 <Typography sx={{
